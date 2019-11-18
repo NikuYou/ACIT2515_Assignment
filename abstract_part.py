@@ -1,5 +1,5 @@
 # Bryan Yuen A01160576
-import datetime as date
+from datetime import datetime
 
 
 class AbstractPart:
@@ -13,15 +13,16 @@ class AbstractPart:
     COST_DISPLAY = "Cost"
     DISCONTINUED_DISPLAY = "Discontinued Status"
 
-    def __init__(self, model, manufacturer, price, cost, stock, release_date_input, ID=0,
-                 is_discontinued=False):
+    def __init__(self, model, manufacturer, price, cost, stock, release_date_input, id=0, is_discontinued=False):
         """Initialize AbstractPart"""
-        if release_date_input != '':
-            release_date = date.datetime.strptime(release_date_input, '%Y-%m-%d')
+        if release_date_input != '' and (release_date_input is not None) and (type(release_date_input) != datetime):
+            release_date = datetime.strptime(release_date_input, '%Y-%m-%d')
+        elif type(release_date_input) == datetime:
+            release_date = release_date_input
         else:
-            raise ValueError('The release date cannot be empty.')
+            raise ValueError('The release date cannot be empty or undefined.')
 
-        AbstractPart._validate_int(AbstractPart.ID_DISPLAY, ID)
+        AbstractPart._validate_int(AbstractPart.ID_DISPLAY, id)
         AbstractPart._validate_string(AbstractPart.MANUFACTURER_DISPLAY, manufacturer)
         AbstractPart._validate_string(AbstractPart.MODEL_DISPLAY, model)
         AbstractPart._validate_money(AbstractPart.PRICE_DISPLAY, price)
@@ -29,13 +30,12 @@ class AbstractPart:
         AbstractPart._validate_stock(stock)
         AbstractPart._validate_datetime(release_date)
 
-        self._ID = int(ID)
+        self._id = int(id)
         self._manufacturer = manufacturer
         self._model = model
         self._stock = int(stock)
         self._release_date = release_date
         self._is_discontinued = is_discontinued
-        self._date_repaired = 0
         self._cost = float("%.2f" % cost)
         self._price = float("%.2f" % price)
 
@@ -57,14 +57,14 @@ class AbstractPart:
         """get the price of part"""
         return float("%.2f" % self._price)
 
-    def _set_id(self, ID):
+    def _set_id(self, id):
         """set the id of part"""
-        AbstractPart._validate_int(AbstractPart.ID_DISPLAY, ID)
-        self._ID = ID
+        AbstractPart._validate_int(AbstractPart.ID_DISPLAY, id)
+        self._id = id
 
     def _get_id(self):
         """get the id of part"""
-        return self._ID
+        return self._id
 
     def get_stock(self):
         """get the stock number of part"""
@@ -102,21 +102,23 @@ class AbstractPart:
         """get part type"""
         raise NotImplementedError("You must assign a child class first")
 
+    def to_dict(self):
+        """ Return dictionary of the part"""
+        raise NotImplementedError("Subclass must implement abstract method")
+
     price = property(_get_price, _set_price)
-    ID = property(_get_id, _set_id)
+    id = property(_get_id, _set_id)
 
     @staticmethod
     def _validate_money(display_name, money):
         """Validate the value of the monetary variable """
-        if (money is None) or (isinstance(money, (float, int)) is False) or (
-                money < AbstractPart.MIN_MONEY):
+        if (money is None) or (isinstance(money, (float, int)) is False) or (money < AbstractPart.MIN_MONEY):
             raise ValueError(display_name + ' you have entered is invalid')
 
     @staticmethod
     def _validate_stock(stock):
         """Validate the value of the variable 'stock'"""
-        if (stock is None) or (isinstance(stock, (float, int)) is False) or (
-                stock < AbstractPart.MIN_STOCK):
+        if (stock is None) or (isinstance(stock, (float, int)) is False) or (stock < AbstractPart.MIN_STOCK):
             raise ValueError('The stock value you have entered is invalid')
 
     @staticmethod
@@ -130,7 +132,7 @@ class AbstractPart:
 
     @staticmethod
     def _validate_datetime(date_input):
-        if (type(date_input) != date.datetime) or (date_input is None):
+        if (type(date_input) != datetime) or (date_input is None):
             raise ValueError('The date you have entered is invalid')
 
     @staticmethod

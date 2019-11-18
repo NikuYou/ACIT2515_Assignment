@@ -1,8 +1,7 @@
 class ShopStats:
     """ Statistics on Computer Parts Shop Inventory """
 
-    def __init__(self, total_parts_model, num_cpu_model, num_gpu_model, total_stock, num_cpu_stock,
-                 num_gpu_stock, discontinued_stock):
+    def __init__(self, total_parts_model, num_cpu_model, num_gpu_model, total_stock, num_cpu_stock, num_gpu_stock, discontinued_stock):
         """ Initialize the data values """
 
         if total_parts_model is None or type(total_parts_model) != int:
@@ -60,3 +59,15 @@ class ShopStats:
     def get_discontinued_stock(self):
         """ Returns the total number of discontinued parts in stock """
         return self._discontinued_stock
+
+    def to_dict(self):
+        """ Return dictionary of the part"""
+        dict = {}
+        dict['total_parts_model'] = self._total_parts_model
+        dict['num_cpu_model'] = self._num_cpu_model
+        dict['num_gpu_model'] = self._num_gpu_model
+        dict['total_stock'] = self._total_stock
+        dict['num_cpu_stock'] = self._num_cpu_stock
+        dict['num_gpu_stock'] = self._num_gpu_stock
+        dict['discontinued_stock'] = self._discontinued_stock
+        return dict

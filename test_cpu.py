@@ -2,7 +2,7 @@ from unittest import TestCase
 from cpu import Cpu
 import unittest
 import inspect
-
+from datetime import datetime
 
 class TestCpu(TestCase):
     """unit test for Cpu class"""
@@ -123,6 +123,96 @@ class TestCpu(TestCase):
     def test_get_part_type(self):
         """TC-070A: Tests if the get_part_type returns correct value"""
         self.assertEqual(self.cpu.get_part_type(), "CPU")
+
+    def test_to_dict(self):
+        """TC-080A Tests the to_dict() method """
+        test_cpu = {
+            "clock_speed_ghz": 3.9,
+            "boost_clock_ghz": 4.6,
+            "core_count": 8,
+            "socket": '1151v2',
+            "hyperthread": True,
+            "model": 'i9-9900k',
+            "manufacturer": 'Intel',
+            "price": 659.99,
+            "cost": 580.50,
+            "stock": 10,
+            "release_date": '2018-11-20',
+            "type": "CPU",
+            'id': 0,
+            'is_discontinued': False
+        }
+        self.assertEqual(self.cpu.to_dict(), test_cpu)
+
+    def test_is_discontinued(self):
+        """TC-090A test get the boolean status of if the part is discontinued"""
+        self.assertEqual(self.cpu.is_discontinued(), False)
+
+    def test_get_cost(self):
+        """TC-100A Test get cost method"""
+        self.assertEqual(self.cpu.get_cost(), 580.50)
+
+    def test_calc_profit(self):
+        """TC-110A Test calc profit"""
+        self.assertEqual(self.cpu.calc_profit(), 79.49)
+
+    def test_set_price_valid(self):
+        """TC-120A Test set price with valid input"""
+        self.cpu.price = 680.50
+        self.assertEqual(self.cpu.price, 680.50)
+
+    def test_set_price_invalid(self):
+        """TC-120A Test set price with invalid input"""
+        self.assertRaisesRegex(ValueError, "Price you have entered is invalid", self.cpu._set_price, '123')
+
+    def test_get_price(self):
+        """TC-130A Test get price"""
+        self.assertEqual(self.cpu.price, 659.99)
+
+    def test_set_id_valid(self):
+        """TC-140A Test set id with valid input"""
+        self.cpu.id = 8
+        self.assertEqual(self.cpu.id, 8)
+
+    def test_set_id_invalid(self):
+        """TC-140B Test set id with invalid input"""
+        self.assertRaisesRegex(ValueError, "ID you have entered is invalid", self.cpu._set_id, '123')
+
+    def test_get_id(self):
+        """TC-150A Test get id"""
+        self.assertEqual(self.cpu.id, 0)
+
+    def test_get_model(self):
+        """TC-160A Test get model"""
+        self.assertEqual(self.cpu.get_model(), 'i9-9900k')
+
+    def test_get_release_date(self):
+        """TC-170A Test get release date"""
+        test_release_date = datetime.strptime("2018-11-20", '%Y-%m-%d')
+        self.assertEqual(self.cpu.get_release_date(), test_release_date)
+
+    def test_get_stock(self):
+        """TC-180A Test get stock"""
+        self.assertEqual(self.cpu.get_stock(), 10)
+
+    def test_add_stock_valid(self):
+        """TG-190A Test add stock with valid input"""
+        self.cpu.add_stock(20)
+        self.assertEqual(self.cpu.get_stock(), 30)
+
+    def test_add_stock_invalid(self):
+        """TC-190B Test add stock with invalid input"""
+        self.assertRaisesRegex(ValueError, "The stock value you have entered is invalid", self.cpu.add_stock, '123')
+
+    def test_set_is_discontinued_valid(self):
+        """TC-200A Test set discontinued with valid input"""
+        self.cpu.set_is_discontinued(True)
+        self.assertEqual(self.cpu.is_discontinued(), True)
+
+    def test_set_is_discontinued_invalid(self):
+        """TC-200B Test set discontinued with invalid input"""
+        self.cpu.set_is_discontinued(True)
+        self.assertRaisesRegex(ValueError, "Discontinued Status you have entered is invalid", self.cpu.set_is_discontinued, '123')
 
 
 if __name__ == "__main__":

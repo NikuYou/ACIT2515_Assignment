@@ -12,8 +12,8 @@ class Cpu(AbstractPart):
     SOCKET_DISPLAY = "Socket model"
     HYPERTHREAD_DISPLAY = "Hyper-threading Available Status"
 
-    def __init__(self, clock_speed_ghz, boost_clock_ghz, core_count, socket, hyperthread, model,
-                 manufacturer, price, cost, stock, release_date_input, ID=0, is_discontinued=False):
+    def __init__(self, clock_speed_ghz, boost_clock_ghz, core_count, socket, hyperthread, model, manufacturer, price,
+                 cost, stock, release_date_input, id=0, is_discontinued=False):
         """Initialize Cpu"""
 
         Cpu._validate_clock(Cpu.CLOCK_DISPLAY, clock_speed_ghz)
@@ -28,8 +28,7 @@ class Cpu(AbstractPart):
         self._socket = socket
         self._hyperthread = hyperthread
 
-        super().__init__(model, manufacturer, price, cost, stock, release_date_input, ID,
-                         is_discontinued)
+        super().__init__(model, manufacturer, price, cost, stock, release_date_input, id, is_discontinued)
 
     def get_clock_speed(self):
         """Get the clock speed(float) of the Cpu"""
@@ -58,14 +57,32 @@ class Cpu(AbstractPart):
         else:
             discontinued_description = 'is not discontinued'
         description = 'The CPU model:{} by {} has {} cores {}. It has a base clock of {}Ghz and boost clock of {}Ghz, compatible with the socket {}. It is released on {} and it {}.'.format(
-            self._model, self._manufacturer, self._core_count, hyperthread_description,
-            self._clock_speed_ghz,
+            self._model, self._manufacturer, self._core_count, hyperthread_description, self._clock_speed_ghz,
             self._boost_clock_ghz, self._socket, self._release_date, discontinued_description)
         return description
 
     def get_part_type(self):
         """Get Part type"""
         return Cpu.PART_TYPE
+
+    def to_dict(self):
+        """ Return dictionary of the part"""
+        dict = {}
+        dict['clock_speed_ghz'] = self._clock_speed_ghz
+        dict['boost_clock_ghz'] = self._boost_clock_ghz
+        dict['core_count'] = self._core_count
+        dict['socket'] = self._socket
+        dict['hyperthread'] = self._hyperthread
+        dict['model'] = self._model
+        dict['manufacturer'] = self._manufacturer
+        dict['price'] = self._price
+        dict['cost'] = self._cost
+        dict['stock'] = self._stock
+        dict['release_date'] = str(self._release_date.strftime("%Y-%m-%d"))
+        dict['type'] = self.get_part_type()
+        dict['id'] = self._id
+        dict['is_discontinued'] = self._is_discontinued
+        return dict
 
     @staticmethod
     def _validate_string(display_name, str_input):
@@ -89,6 +106,5 @@ class Cpu(AbstractPart):
 
     @staticmethod
     def _validate_core(display_name, int_input):
-        if (isinstance(int_input, (float, int)) is False) or (int_input is None) or (
-                int_input < Cpu.MIN_CORE):
+        if (isinstance(int_input, (float, int)) is False) or (int_input is None) or (int_input < Cpu.MIN_CORE):
             raise ValueError(display_name + ' you have entered is invalid')

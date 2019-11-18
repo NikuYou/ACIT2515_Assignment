@@ -12,9 +12,7 @@ class Gpu(AbstractPart):
     LENGTH_DISPLAY = "GPU Length"
     THICKNESS_DISPLAY = "GPU Thickness"
 
-    def __init__(self, clock_speed_mhz, boost_clock_mhz, chipset, pcie_ver, length_cm, thickness_cm,
-                 model, manufacturer, price, cost, stock, release_date_input, ID=0,
-                 is_discontinued=False):
+    def __init__(self, clock_speed_mhz, boost_clock_mhz, chipset, pcie_ver, length_cm, thickness_cm, model, manufacturer, price, cost, stock, release_date_input, id=0, is_discontinued=False):
         """Initialize Gpu"""
 
         Gpu._validate_pos_float(Gpu.CLOCK_DISPLAY, clock_speed_mhz)
@@ -31,8 +29,7 @@ class Gpu(AbstractPart):
         self._length_cm = float("%.2f" % length_cm)
         self._thickness_cm = float("%.2f" % thickness_cm)
 
-        super().__init__(model, manufacturer, price, cost, stock, release_date_input, ID,
-                         is_discontinued)
+        super().__init__(model, manufacturer, price, cost, stock, release_date_input, id, is_discontinued)
 
     def get_clock_speed(self):
         """Get the clock speed(float) of the Gpu"""
@@ -62,14 +59,33 @@ class Gpu(AbstractPart):
             discontinued_description = 'is not discontinued'
         description = 'The GPU model:{} by {} has a base clock of {}Mhz and boost clock of {}Mhz. It runs on PCIE{}. It has length:{}cm and thickness:{}cm.  It is released on {} and it {}.'.format(
             self._model, self._manufacturer, self._clock_speed_mhz,
-            self._boost_clock_mhz, self._pcie_ver, self._length_cm, self._thickness_cm,
-            self._release_date,
+            self._boost_clock_mhz, self._pcie_ver, self._length_cm, self._thickness_cm, self._release_date,
             discontinued_description)
         return description
 
     def get_part_type(self):
         """Get Part type"""
         return Gpu.PART_TYPE
+
+    def to_dict(self):
+        """ Return dictionary of the part"""
+        dict = {}
+        dict['clock_speed_mhz'] = self._clock_speed_mhz
+        dict['boost_clock_mhz'] = self._boost_clock_mhz
+        dict['chipset'] = self._chipset
+        dict['pcie_ver'] = self._pcie_ver
+        dict['length_cm'] = self._length_cm
+        dict['thickness_cm'] = self._thickness_cm
+        dict['model'] = self._model
+        dict['manufacturer'] = self._manufacturer
+        dict['price'] = self._price
+        dict['cost'] = self._cost
+        dict['stock'] = self._stock
+        dict['release_date'] = str(self._release_date.strftime("%Y-%m-%d"))
+        dict['type'] = self.get_part_type()
+        dict['id'] = self._id
+        dict['is_discontinued'] = self._is_discontinued
+        return dict
 
     @staticmethod
     def _validate_string(display_name, str_input):
@@ -83,6 +99,7 @@ class Gpu(AbstractPart):
     @staticmethod
     def _validate_pos_float(display_name, clock):
         """Validate the value of the clock speed variable """
-        if (clock is None) or (isinstance(clock, (float, int)) is False) or (
-                clock < Gpu.MIN_CLOCK_PCIE_LENGTH_THICKNESS):
+        if (clock is None) or (isinstance(clock, (float, int)) is False) or (clock < Gpu.MIN_CLOCK_PCIE_LENGTH_THICKNESS):
             raise ValueError(display_name + ' you have entered is invalid')
+
+
